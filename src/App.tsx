@@ -2,25 +2,31 @@ import { Route, Routes } from 'react-router-dom'
 import './globals.css'
 import SignInForm from './_auth/forms/SignInForm'
 import Home from './_root/pages/Home'
+import SignUpForm from './_auth/forms/SignUpForm'
+import AuthLayout from './_auth/AuthLayout'
+import RootLayout from './_root/RootLayout'
 
 const App = () => {
   return (
-  <main className='flex h-screen'>
-    <Routes>
+    <main className='flex h-screen'>
+      <Routes>
 
-      {/* Public routes*/}
+        {/* Public routes*/}
+        <Route element={< AuthLayout />}>
+          <Route path="/sign-in" element={<SignInForm />} />
+          <Route path="/sign-up" element={<SignUpForm />} />
+        </Route>
 
-      <Route path ="/sign-in" element = {<SignInForm />} />
 
+        {/* Private routes*/}
+        <Route element={<RootLayout />}>
+          <Route index element={<Home />} />
+        </Route>
 
-      {/* Private routes*/}
+      </Routes>
 
-      <Route index element={<Home/>} />
-      
-    </Routes>
+    </main>
 
-  </main>
-  
   )
 }
 
