@@ -2,12 +2,11 @@ import { Button } from "@/components/ui/button"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,13 +15,19 @@ import {
 import { Input } from "@/components/ui/input"
 import { SignUpValidation } from "@/lib/validation"
 import Loader from "@/components/shared/Loader"
+import { useToast } from "@/components/ui/use-toast"
+import { useCreateAccountMutation, useSignInAccount } from "@/lib/react-query/queriesAndMutations"
+import { useUserContext } from "@/context/AuthContext"
 
 
- 
 
 const SignUpForm = () => {
 
-  const isLoading = false
+  const { toast } = useToast()
+  const navigate = useNavigate()
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof SignUpValidation>>({
     resolver: zodResolver(SignUpValidation),
@@ -34,12 +39,49 @@ const SignUpForm = () => {
     },
   })
 
+  // Queries
+  const { mutateAsync: createUserAccount, isPending: isCreatingUser } = useCreateAccountMutation()
+  const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccount()
+
+
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof SignUpValidation>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof SignUpValidation>) {
+    console.log("values", values)
+    const newUser = await createUserAccount(values)
+
+    console.log(newUser)
+
+    if (!newUser) {
+      return toast({
+        title: "Sign up failed, Please try again."
+      })
+    }
+    const session = await signInAccount({
+      email: values.email,
+      password: values.password
+    })
+
+    if (!session) {
+      return toast({
+        title: "Sign in failed, Please try again."
+      })
+    }
+
+    const isLoggedIn = await checkAuthUser();
+
+    if (isLoggedIn) {
+      form.reset()
+      navigate('/')
+    }
+    else {
+      return toast({
+        title: "Sign in failed, Please try again."
+      })
+    }
+
   }
+
+
 
   return (
     <>
@@ -67,7 +109,7 @@ const SignUpForm = () => {
               )}
             />
 
-<FormField
+            <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
@@ -82,7 +124,7 @@ const SignUpForm = () => {
             />
 
 
-<FormField
+            <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
@@ -97,7 +139,7 @@ const SignUpForm = () => {
             />
 
 
-<FormField
+            <FormField
               control={form.control}
               name="password"
               render={({ field }) => (
@@ -110,20 +152,20 @@ const SignUpForm = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="shad-button_primary">
 
+            <Button type="submit" className="shad-button_primary">
               {
-                isLoading ? (
+                isCreatingUser ? (
                   <div className="flex-center gap-2"> <Loader />Loading...</div>
-                ) : "Sign Up"
+                ) : ("Sign Up")
               }
             </Button>
 
 
-          <p className="text-small-regular text-light-2 text-center mt-2">
-            Already have an account? 
-            <Link to="/sing-in" className="text-primary-500 text-small-semibold ml-1">Login</Link>
-          </p>
+            <p className="text-small-regular text-light-2 text-center mt-2">
+              Already have an account?
+              <Link to="/sign-in" className="text-primary-500 text-small-semibold ml-1">Login</Link>
+            </p>
 
           </form>
 
