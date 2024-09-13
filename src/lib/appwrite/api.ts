@@ -195,8 +195,8 @@ export function getFilePreview(fileId: string) {
 
 export async function deleteFile(fileId: string) {
     try {
-        await storage.deleteFile(appwriteConfig.storageId,fileId)
-        
+        await storage.deleteFile(appwriteConfig.storageId, fileId)
+
         return {
             status: "ok"
         }
@@ -206,3 +206,84 @@ export async function deleteFile(fileId: string) {
         console.log("error in delete", error)
     }
 }
+
+export async function getRecentPosts() {
+    try {
+        const posts = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            [Query.orderDesc('$createdAt'), Query.limit(20)]
+        )
+
+        if (!posts) throw Error
+
+        return posts
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+export async function likePost(postId: string, likesArray: string[]) {
+    try {
+        const updatedPost = await databases.updateDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            postId,
+            {
+                likes: likesArray
+            }
+        )
+
+        if (!updatedPost) throw Error
+
+        return updatedPost
+
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+
+export async function savePost(postId: string, userId: string) {
+    try {
+        const savedPost = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.savesCollectionId,
+            ID.unique(),
+            {
+                user: userId,
+                post: postId
+            }
+        )
+
+        if (!savedPost) throw Error
+
+        return savedPost
+
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+export async function deleteSavedPost(savedRecordId: string) {
+    try {
+        const statusCode = await databases.deleteDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.savesCollectionId,
+            savedRecordId
+        )
+
+        if (!statusCode) throw Error
+
+        return { status: 'ok' }
+
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+
