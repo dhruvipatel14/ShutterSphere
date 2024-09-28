@@ -8,18 +8,21 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 
 const PostDetails = () => {
 
-  const { id } = useParams()
+  const { id } = useParams<{ id ?: string }>()
   const { data: post, isPending } = useGetPostById(id || '')
   const { user } = useUserContext()
   const { mutate: deletePost } = useDeletePost();
   const navigate = useNavigate()
 
   const handleDeletePost = () => {
+    if (!id) {
+      console.error("Post ID is missing");
+      return;
+    }
+    
     deletePost({ postId: id, imageId: post?.imageId })
     navigate(-1)
-
   }
-
 
   return (
     <div className='post_details-container'>

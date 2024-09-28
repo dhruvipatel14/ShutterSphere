@@ -12,7 +12,7 @@ const Explore = () => {
 
   const [searchValue, setSearchValue] = useState("");
   const debouncedValue = useDebounce(searchValue, 5000)
-  const { data: searchedPost, isFetching: isSearchFetching } = useSearchPost(searchValue)
+  const { data: searchedPost, isFetching: isSearchFetching } = useSearchPost(debouncedValue)
 
   const { ref, inView } = useInView()
   useEffect(() => {
@@ -28,7 +28,7 @@ const Explore = () => {
   }
 
   const shouldShowSearchResults = searchValue !== ''
-  const shouldShowPosts = !shouldShowSearchResults && posts.pages.every((item) => item.documents.length === 0)
+  const shouldShowPosts = !shouldShowSearchResults && posts.pages.every((item) => item && item.documents.length === 0)
 
 
   return (
