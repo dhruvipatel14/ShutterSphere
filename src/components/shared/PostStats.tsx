@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import Loader from "./Loader"
 
 type PostStatsProps = {
-    post: Models.Document,
+    post: Models.Document | any,
     userId: string
 }
 
@@ -15,7 +15,6 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
 
     const [likes, setLikes] = useState(likeList)
     const [isSaved, setIsSaved] = useState(false)
-
 
     const { mutate: likePost } = useLikedPOst()
     const { mutate: savePost, isPending: isSavingPost } = useSavePost()

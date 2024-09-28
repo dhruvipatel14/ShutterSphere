@@ -41,7 +41,7 @@ const SignUpForm = () => {
 
   // Queries
   const { mutateAsync: createUserAccount, isPending: isCreatingUser } = useCreateAccountMutation()
-  const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccount()
+  const { mutateAsync: signInAccount, isPending: isSigningInUser } = useSignInAccount()
 
 
   // 2. Define a submit handler.
@@ -155,7 +155,7 @@ const SignUpForm = () => {
 
             <Button type="submit" className="shad-button_primary">
               {
-                isCreatingUser ? (
+                isCreatingUser || isUserLoading || isSigningInUser ? (
                   <div className="flex-center gap-2"> <Loader />Loading...</div>
                 ) : ("Sign Up")
               }

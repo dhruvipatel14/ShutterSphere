@@ -56,3 +56,14 @@ export type INavLink = {
     username: string;
     password: string;
   };
+
+
+  export type IPostResponse = {
+    postId: string;
+    caption: string;
+    imageId: string;
+    imageUrl: URL;
+    file: File[];
+    location?: string;
+    tags?: string;
+  };

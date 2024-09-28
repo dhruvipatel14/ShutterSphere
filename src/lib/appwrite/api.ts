@@ -152,6 +152,8 @@ export async function createPost(post: INewPost) {
             throw Error
         }
 
+        return newPost
+
     } catch (error) {
         console.log(error)
     }
@@ -220,6 +222,8 @@ export async function updatePost(post: IUpdatePost) {
             await deleteFile(post.imageId)
             throw Error
         }
+
+        return updatedPost
 
     } catch (error) {
         console.log(error)
