@@ -21,7 +21,6 @@ const LeftSidebar = () => {
     }
   }, [isSuccess])
 
-
   return (
     <nav className='leftsidebar'>
       <div className='flex flex-col gap-11'>
