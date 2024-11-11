@@ -1,6 +1,6 @@
 # ShutterSphere
 
-## Live project link : [ShutterSphere](https://shutter-sphere.netlify.app/sign-in)
+## Live project link : [ShutterSphere](https://shutter-sphere.netlify.app/)
 
 A mobile responsive web-based social media platform that enables users to explore profiles, like and save posts, create and edit content, and browse other users.
 
